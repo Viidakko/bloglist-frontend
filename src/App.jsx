@@ -7,11 +7,10 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import LogoutForm from './components/LogoutForm'
 import Togglable from './components/Togglable'
+import BlogList from './components/BlogList'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
     const [showMessage, setShowMessage] = useState(null)
     const [isErrormessage, setErrorMessage] = useState(false)
@@ -33,8 +32,9 @@ const App = () => {
         }
     }, [])
 
-    const handleLogin = async event => {
-        event.preventDefault()
+    const handleLogin = async (loginUser) => {
+        const username = loginUser.username
+        const password = loginUser.password
         try {
             const user = await loginService.login({ username, password })
             blogService.setToken(user.token)
@@ -42,8 +42,6 @@ const App = () => {
                 'loggedBlogappUser', JSON.stringify(user)
             )
             setUser(user)
-            setUsername('')
-            setPassword('')
         }
         catch (error) {
             setErrorMessage(true)
@@ -75,26 +73,12 @@ const App = () => {
         }
     }
 
-    const handleUserName = event => {
-        setUsername(event.target.value)
-    }
-
-    const handlePassword = event => {
-        setPassword(event.target.value)
-    }
-
     if (user === null) {
         return (
             <div>
                 <h2>Log in to application</h2>
                 <Notification message={showMessage} error={isErrormessage}/>
-                <LoginForm
-                    submit={handleLogin}
-                    formUsername={username}
-                    formPassword={password}
-                    handleUserName={handleUserName}
-                    handlePassword={handlePassword}>
-                </LoginForm>
+                <LoginForm login={handleLogin}/>
             </div>
         )
     }
@@ -104,14 +88,10 @@ const App = () => {
             <h2>Blogs</h2>
             <Notification message={showMessage} error={isErrormessage}/>
             <LogoutForm user={user} handleLogout={handleLogout}/>
-            <div>
-                <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-                    <BlogForm createBlog={handleNewBlog}></BlogForm>
-                </Togglable>
-            </div>
-            {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} />
-            )}
+            <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
+                <BlogForm createBlog={handleNewBlog}/>
+            </Togglable>
+            <BlogList blogs={blogs}/>
         </div>
     )
 }
