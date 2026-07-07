@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -11,6 +12,8 @@ const App = () => {
     const [newTitle, setTitle] = useState('')
     const [newAuthor, setAuthor] = useState('')
     const [newUrl, setUrl] = useState('')
+    const [showMessage, setShowMessage] = useState(null)
+    const [isErrormessage, setErrorMessage] = useState(false)
 
     useEffect(() => {
         blogService.getAll().then(blogs => {
@@ -39,8 +42,10 @@ const App = () => {
             setUsername('')
             setPassword('')
         }
-        catch {
-            console.error('wrong credentials')
+        catch (error) {
+            setErrorMessage(true)
+            setShowMessage(error.response.data.error)
+            setTimeout(() => {setShowMessage(null)} , 5000)
         }
     }
 
@@ -64,9 +69,14 @@ const App = () => {
             setTitle('')
             setAuthor('')
             setUrl('')
+            setErrorMessage(false)
+            setShowMessage(`Added a new blog: ${newTitle} by ${newAuthor}`)
+            setTimeout(() => {setShowMessage(null)} , 3000)
         }
-        catch {
-            console.error('Adding blog failed')
+        catch (error) {
+            setErrorMessage(true)
+            setShowMessage(error.response.data.error)
+            setTimeout(() => {setShowMessage(null)} , 5000)
         }
     }
 
@@ -75,6 +85,7 @@ const App = () => {
         return (
             <div>
                 <h2>Log in to application</h2>
+                <Notification message={showMessage} error={isErrormessage}/>
                 <form onSubmit={handleLogin}>
                     <div>
                         <label>
@@ -105,6 +116,7 @@ const App = () => {
     return (
         <div>
             <h2>Blogs</h2>
+            <Notification message={showMessage} error={isErrormessage}/>
             <div>
                 <form onSubmit={handleLogout} style={{display: 'flex', alignItems: 'center'}}>
                     <p>{user.name} logged in</p>
