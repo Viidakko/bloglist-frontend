@@ -85,6 +85,24 @@ const App = () => {
         }
     }
 
+    const handleDelete = async (id) => {
+        try {
+            const blog = blogs.find(b => b.id === id)
+            if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)){
+                setErrorMessage(false)
+                setShowMessage(`Deleted ${blog.title} by ${blog.author}`)
+                setTimeout(() => {setShowMessage(null)} , 3000)
+                await blogService.destroy(id)
+                setBlogs(blogs.filter(b => b.id !== id))
+            }
+        }
+        catch (error) {
+            setErrorMessage(true)
+            setShowMessage(error.response.data.error)
+            setTimeout(() => {setShowMessage(null)} , 5000)
+        }
+    }
+
     if (user === null) {
         return (
             <div>
@@ -103,7 +121,7 @@ const App = () => {
             <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
                 <BlogForm createBlog={handleNewBlog}/>
             </Togglable>
-            <BlogList blogs={blogs} like={handleLike}/>
+            <BlogList blogs={blogs} like={handleLike} deleteBlog={handleDelete} currentUser={user}/>
         </div>
     )
 }
