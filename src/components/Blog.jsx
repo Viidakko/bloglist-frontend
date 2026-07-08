@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, like, deleteBlog, currentUser }) => {
     const [visible, setVisible] = useState(false)
-    
+
     const blogStyle = {
         paddingTop: 10,
         paddingLeft: 2,
@@ -38,7 +38,7 @@ const Blog = ({ blog, like, deleteBlog, currentUser }) => {
                 <p>Added by: {blog.user?.name || 'unknown user'}</p>
                 {showRemoveButton && <button onClick={remove}>Remove</button>}
             </div>
-        </div> 
+        </div>
     )
 }
 

@@ -1,4 +1,4 @@
-import Blog from "./Blog"
+import Blog from './Blog'
 
 const BlogList = ({ blogs, like, deleteBlog, currentUser }) => {
     const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
