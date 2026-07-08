@@ -1,11 +1,13 @@
 import Blog from "./Blog"
 
-const BlogList = ({ blogs }) => (
-    <div>
-        {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-        )}
-    </div>  
-)
+const BlogList = ({ blogs, like }) => {
+    return (
+        <div>
+            {blogs.map(blog =>
+                <Blog key={blog.id} blog={blog} like={like} />
+            )}
+        </div>
+    )
+}
 
 export default BlogList
