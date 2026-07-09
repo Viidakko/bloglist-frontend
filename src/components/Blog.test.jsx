@@ -42,3 +42,25 @@ test('renders all content when button is pressed', async () => {
     const likes = screen.getByText('Likes: ', { exact: false })
     expect(likes).toBeVisible()
 })
+
+test('pressing like 2 times calls like twice', async () => {
+    const blog = {
+        title: 'Test blog',
+        author: 'Test author',
+        url: 'http://testurl.com',
+        likes: 5
+    }
+
+    const mockHandler = vi.fn()
+
+    render(<Blog blog={blog} like={mockHandler} />)
+
+    const user = userEvent.setup()
+    const view = screen.getByText('view')
+    await user.click(view)
+    const like = screen.getByText('like')
+    await user.click(like)
+    await user.click(like)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+})
