@@ -12,7 +12,7 @@ const Blog = ({ blog, like, deleteBlog, currentUser }) => {
     }
 
     const showWhenVisible = { display: visible ? '' : 'none' }
-    const showRemoveButton = blog.user?.id !== currentUser.id
+    const showRemoveButton = blog.user?.id !== currentUser?.id
 
     const toggleVisibility = () => {
         setVisible(!visible)
