@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
+import BlogForm from './BlogForm'
+import { vi } from 'vitest'
 
 test('renders title and author when button is not pressed', () => {
     const blog = {
@@ -63,4 +65,28 @@ test('pressing like 2 times calls like twice', async () => {
     await user.click(like)
 
     expect(mockHandler.mock.calls).toHaveLength(2)
+})
+
+test('BlogForm calls createBlog with correct information when form is submitted', async () => {
+    const mockHandler = vi.fn()
+
+    render(<BlogForm createBlog={mockHandler} />)
+
+    const user = userEvent.setup()
+
+    const inputs = screen.getAllByDisplayValue('')
+
+    await user.type(inputs[0], 'Test Blog Title')
+    await user.type(inputs[1], 'Test Author')
+    await user.type(inputs[2], 'http://example.com')
+
+    const button = screen.getByText('add')
+    await user.click(button)
+
+    expect(mockHandler).toHaveBeenCalledTimes(1)
+    expect(mockHandler).toHaveBeenCalledWith({
+        title: 'Test Blog Title',
+        author: 'Test Author',
+        url: 'http://example.com'
+    })
 })
